@@ -13,7 +13,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "calendar";
+$dbname = "event_db";
 
 // Create connection
 $bdd = mysqli_connect($servername, $username, $password, $dbname);

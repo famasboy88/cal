@@ -2,7 +2,7 @@
 require_once('bdd.php');
 
 
-$sql = "SELECT id, title, start, end, color FROM events ";
+$sql = "SELECT * FROM register_event";
 
 $req = mysqli_query($bdd,$sql);
 //$req->execute();
@@ -16,7 +16,9 @@ if(mysqli_num_rows($req)>0){
 	}
 }
 
-
+// foreach ($event as $key ) {
+// 	echo $key['petition_name'];
+// }
 
 
 ?>
@@ -122,9 +124,17 @@ if(mysqli_num_rows($req)>0){
 				  <div class="form-group">
 					<label for="title" class="col-sm-2 control-label">Title</label>
 					<div class="col-sm-10">
-					  <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+					  <input type="text" name="title" class="form-control" id="title" placeholder="Title" required="true">
 					</div>
 				  </div>
+
+				  <div class="form-group">
+					<label for="event_detail" class="col-sm-2 control-label">Details</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" rows="5" name="event_detail" id="event_detail" placeholder="Event Details" required="true"></textarea>
+						</div>
+				  </div>
+
 				  <div class="form-group">
 					<label for="color" class="col-sm-2 control-label">Color</label>
 					<div class="col-sm-10">
@@ -147,13 +157,80 @@ if(mysqli_num_rows($req)>0){
 					  <input type="text" name="start" class="form-control" id="start" readonly>
 					</div>
 				  </div>
+
 				  <div class="form-group">
 					<label for="end" class="col-sm-2 control-label">End date</label>
 					<div class="col-sm-10">
 					  <input type="text" name="end" class="form-control" id="end" readonly>
 					</div>
 				  </div>
+
+				  <div class="form-group">
+					<label for="event_category" class="col-sm-2 control-label">Category</label>
+					<div class="col-sm-10">
+					  <select name="event_category" class="form-control"  id="event_category" required="true">
+						  <option value="-1">Choose Event Category ...</option>
+						  <option value="Appearance">Appearance</option>
+						  <option value="Attraction">Attraction</option>
+						  <option value="Retreat">Retreat</option>
+						  <option value="Training">Training</option>
+						  <option value="Concert">Attraction</option>
+						  <option value="Conference">Conference</option>
+						  <option value="Convention">Convention</option>
+						  <option value="Gala">Gala</option>
+						  <option value="Festival">Festival</option>
+						  <option value="Competition">Competition</option>
+						  <option value="Meeting">Meeting</option>
+						  <option value="Party">Party</option>
+						  <option value="Rally">Rally</option>
+						  <option value="Screening">Screening</option>
+						  <option value="Seminar">Seminar</option>
+						  <option value="Tour">Tour</option>
+						  <option value="Other">Other</option>
+						</select>
+					</div>
+				  </div>											
+					
+				<div class="form-group">
+					<label for="event_venue" class="col-sm-2 control-label">Venue</label>
+					<div class="col-sm-10">
+					  <input type="text" name="event_venue" class="form-control" id="event_venue" placeholder="Venue" required="true">
+					</div>
+				</div>
+
+				<hr>
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">Ticket Details</h4>
+			  	</div>
+			  	<br>
+				<div class="form-group">
+					<label for="event_ticket_price" class="col-sm-2 control-label">Price</label>
+					<div class="col-sm-10">
+					  <input type="number" name="event_ticket_price" class="form-control" id="event_ticket_price" placeholder="Ticket Price" required="true">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="event_ticket_type" class="col-sm-2 control-label">Type</label>
+					<div class="col-sm-10">
+					  <input type="text" name="event_ticket_type" class="form-control" id="event_ticket_type" placeholder="Ticket Type (optional)">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="event_ticket_total_no" class="col-sm-2 control-label">Total Number</label>
+					<div class="col-sm-10">
+					  <input type="number" name="event_ticket_total_no" class="form-control" id="event_ticket_total_no" placeholder="Ticket Total Number" required="true">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="event_ticket_discount" class="col-sm-2 control-label">Discount</label>
+					<div class="col-sm-10">
+					  <input type="number" name="event_ticket_discount" class="form-control" id="event_ticket_discount" placeholder="Ticket Discount" required="true">
+					</div>
+				</div>
 				
+
 			  </div>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -235,6 +312,7 @@ if(mysqli_num_rows($req)>0){
 	
 	<script>
 
+	
 	$(document).ready(function() {
 		
 		$('#calendar').fullCalendar({
@@ -248,20 +326,20 @@ if(mysqli_num_rows($req)>0){
 			eventLimit: true, // allow "more" link when too many events
 			selectable: true,
 			selectHelper: true,
-			// select: function(start, end) {
+			select: function(start, end) {
 				
-			// 	$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
-			// 	$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
-			// 	$('#ModalAdd').modal('show');
-			// },
-			// eventRender: function(event, element) {
-			// 	element.bind('dblclick', function() {
-			// 		$('#ModalEdit #id').val(event.id);
-			// 		$('#ModalEdit #title').val(event.title);
-			// 		$('#ModalEdit #color').val(event.color);
-			// 		$('#ModalEdit').modal('show');
-			// 	});
-			// },
+				$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+				$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
+				$('#ModalAdd').modal('show');
+			},
+			eventRender: function(event, element) {
+				element.bind('dblclick', function() {
+					$('#ModalEdit #id').val(event.id);
+					$('#ModalEdit #title').val(event.title);
+					//$('#ModalEdit #color').val(event.color);
+					$('#ModalEdit').modal('show');
+				});
+			},
 			// eventDrop: function(event, delta, revertFunc) { // si changement de position
 
 			// 	edit(event);
@@ -275,27 +353,27 @@ if(mysqli_num_rows($req)>0){
 			events: [
 				<?php foreach($event as $events): 
 				
-					$start = explode(" ", $events['start']);
-					$end = explode(" ", $events['end']);
+					$start = explode(" ", $events['petition_date_start']);
+					$end = explode(" ", $events['petition_date_end']);
 					if($start[1] == '00:00:00'){
 						$start = $start[0];
 					}else{
-						$start = $events['start'];
+						$start = $events['petition_date_start'];
 					}
 					if($end[1] == '00:00:00'){
 						$end = $end[0];
 					}else{
-						$end = $events['end'];
+						$end = $events['petition_date_end'];
 					}
 
 					//echo $event['start'];
 				?>
 				{
-					id: '<?php echo $events['id']; ?>',
-					title: '<?php echo $events['title']; ?>',
+					id: '<?php echo $events['petition_id']; ?>',
+					title: '<?php echo $events['petition_name']; ?>',
 					start: '<?php echo $start; ?>',
 					end: '<?php echo $end; ?>',
-					color: '<?php echo $events['color']; ?>',
+					
 				},
 				<?php endforeach; ?>		
 			
@@ -330,8 +408,12 @@ if(mysqli_num_rows($req)>0){
 		// 		}
 		// 	});
 		// }
+
+		////////////////////////
 		
 	});
+
+
 
 </script>
 
