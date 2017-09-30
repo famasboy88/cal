@@ -4,10 +4,20 @@ require_once('bdd.php');
 
 $sql = "SELECT id, title, start, end, color FROM events ";
 
-$req = $bdd->prepare($sql);
-$req->execute();
+$req = mysqli_query($bdd,$sql);
+//$req->execute();
 
-$events = $req->fetchAll();
+// $events = $req->fetchAll();
+$event = array();
+
+if(mysqli_num_rows($req)>0){
+	while ($row = mysqli_fetch_assoc($req)) {
+		$event[] = $row;
+	}
+}
+
+
+
 
 ?>
 
@@ -22,7 +32,7 @@ $events = $req->fetchAll();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bare - Start Bootstrap Template</title>
+    <title>Calendar Module</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -78,7 +88,7 @@ $events = $req->fetchAll();
                     </li>
                 </ul>
             </div> -->
-            
+
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
@@ -221,7 +231,7 @@ $events = $req->fetchAll();
 	
 	<!-- FullCalendar -->
 	<script src='js/moment.min.js'></script>
-	<script src='js/fullcalendar.min.js'></script>
+	<script src='js/fullcalendar.js'></script>
 	
 	<script>
 
@@ -231,92 +241,95 @@ $events = $req->fetchAll();
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: 'month,agendaWeek,agendaDay,agenda'
 			},
 			defaultDate: "<?php date_default_timezone_set('UTC'); echo date('d/M/Y'); ?>",
 			editable: true,
 			eventLimit: true, // allow "more" link when too many events
 			selectable: true,
 			selectHelper: true,
-			select: function(start, end) {
+			// select: function(start, end) {
 				
-				$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
-				$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
-				$('#ModalAdd').modal('show');
-			},
-			eventRender: function(event, element) {
-				element.bind('dblclick', function() {
-					$('#ModalEdit #id').val(event.id);
-					$('#ModalEdit #title').val(event.title);
-					$('#ModalEdit #color').val(event.color);
-					$('#ModalEdit').modal('show');
-				});
-			},
-			eventDrop: function(event, delta, revertFunc) { // si changement de position
+			// 	$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+			// 	$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
+			// 	$('#ModalAdd').modal('show');
+			// },
+			// eventRender: function(event, element) {
+			// 	element.bind('dblclick', function() {
+			// 		$('#ModalEdit #id').val(event.id);
+			// 		$('#ModalEdit #title').val(event.title);
+			// 		$('#ModalEdit #color').val(event.color);
+			// 		$('#ModalEdit').modal('show');
+			// 	});
+			// },
+			// eventDrop: function(event, delta, revertFunc) { // si changement de position
 
-				edit(event);
+			// 	edit(event);
 
-			},
-			eventResize: function(event,dayDelta,minuteDelta,revertFunc) { // si changement de longueur
+			// },
+			// eventResize: function(event,dayDelta,minuteDelta,revertFunc) { // si changement de longueur
 
-				edit(event);
+			// 	edit(event);
 
-			},
+			// },
 			events: [
-			<?php foreach($events as $event): 
-			
-				$start = explode(" ", $event['start']);
-				$end = explode(" ", $event['end']);
-				if($start[1] == '00:00:00'){
-					$start = $start[0];
-				}else{
-					$start = $event['start'];
-				}
-				if($end[1] == '00:00:00'){
-					$end = $end[0];
-				}else{
-					$end = $event['end'];
-				}
-			?>
+				<?php foreach($event as $events): 
+				
+					$start = explode(" ", $events['start']);
+					$end = explode(" ", $events['end']);
+					if($start[1] == '00:00:00'){
+						$start = $start[0];
+					}else{
+						$start = $events['start'];
+					}
+					if($end[1] == '00:00:00'){
+						$end = $end[0];
+					}else{
+						$end = $events['end'];
+					}
+
+					//echo $event['start'];
+				?>
 				{
-					id: '<?php echo $event['id']; ?>',
-					title: '<?php echo $event['title']; ?>',
+					id: '<?php echo $events['id']; ?>',
+					title: '<?php echo $events['title']; ?>',
 					start: '<?php echo $start; ?>',
 					end: '<?php echo $end; ?>',
-					color: '<?php echo $event['color']; ?>',
+					color: '<?php echo $events['color']; ?>',
 				},
-			<?php endforeach; ?>
+				<?php endforeach; ?>		
+			
 			]
 		});
 		
-		function edit(event){
-			start = event.start.format('YYYY-MM-DD HH:mm:ss');
-			if(event.end){
-				end = event.end.format('YYYY-MM-DD HH:mm:ss');
-			}else{
-				end = start;
-			}
+		// function edit(event){
+		// 	start = event.start.format('YYYY-MM-DD HH:mm:ss');
+		// 	if(event.end){
+		// 		end = event.end.format('YYYY-MM-DD HH:mm:ss');
+		// 	}else{
+		// 		end = start;
+		// 	}
 			
-			id =  event.id;
+		// 	id =  event.id;
 			
-			Event = [];
-			Event[0] = id;
-			Event[1] = start;
-			Event[2] = end;
+		// 	Event = [];
+		// 	Event[0] = id;
+		// 	Event[1] = start;
+		// 	Event[2] = end;
 			
-			$.ajax({
-			 url: 'editEventDate.php',
-			 type: "POST",
-			 data: {Event:Event},
-			 success: function(rep) {
-					if(rep == 'OK'){
-						alert('Saved');
-					}else{
-						alert('Could not be saved. try again.'); 
-					}
-				}
-			});
-		}
+		// 	$.ajax({
+		// 	 url: 'editEventDate.php',
+		// 	 type: "POST",
+		// 	 data: {Event:Event},
+		// 	 success: function(rep) {
+		// 			if(rep == 'OK'){
+		// 				alert('Saved');
+		// 			}else{
+		// 				alert('Could not be saved. try again.'); 
+		// 			}
+		// 		}
+		// 	});
+		// }
 		
 	});
 
