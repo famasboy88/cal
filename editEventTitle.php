@@ -137,9 +137,9 @@ if (isset($_POST['title']) && isset($_POST['id'])){
 				
 			  </div>
 			  <div class="modal-footer">
-			  	<button type="submit" name="delete_event" id="delete_event" value="delete" class="btn btn-danger pull-left">Delete Event</button>
+			  	<button type="submit" name="action" value="delete" class="btn btn-danger pull-left">Delete Event</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Save changes</button>
+				<button type="submit" name="action" value="update" class="btn btn-primary">Save changes</button>
 			  </div>
 			</form>
 			</div>
